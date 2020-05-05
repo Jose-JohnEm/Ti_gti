@@ -1,15 +1,8 @@
-9→b
-Disp b
-Pause 
-9+47/3→a
-Disp a
-If x==4:Then 
-Disp c
-If a==4:Then 
-1+x+2*(3-5)→x
-Disp x
+0→a
+6→m
+If m>a:Then 
+If a=2:Then 
+If a≠3:Then 
+Disp "Je t'aime de trop"
 End 
-x-3→x
-End 
-a+b→c
-Disp c
+Disp "Coucou"
