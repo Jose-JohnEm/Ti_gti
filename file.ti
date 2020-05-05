@@ -1,8 +1,0 @@
-a = 0
-m = 6
-
-if (m > a)
-    if (a == 2)
-        if (a != 3)
-            print("Je t'aime de trop")
-print("Coucou")

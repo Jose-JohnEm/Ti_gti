@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from sys import argv as av
+
 from src.check_extension import ext_file
 from src.check_extension import check_ext
 
@@ -8,58 +9,16 @@ from src.var_affect import str_to_tab
 from src.var_affect import is_affectation
 from src.var_affect import write_affect
 
+from src.print_disp import is_print
+from src.print_disp import write_print
+
+from src.pause import is_pause
+from src.pause import write_pause
+
+from src.condition_if import is_an_if
+from src.condition_if import write_an_if
+
 indent = 0
-
-def is_print(line):
-    if line[:6] != "print(" or line[len(line) - 1] != ')':
-        return False
-    return True
-
-def write_print(line):
-    result = "Disp " + line[6:-1]
-    return result
-
-def is_pause(line):
-    if line == "pause":
-        return True
-    return False
-
-def write_pause(line):
-    return "Pause "
-
-def is_a_test(line):
-    print(line)
-    if line.find("==") != -1:
-        return True
-    if line.find("!=") != -1:
-        return True
-    if line.find("<") != -1:
-        return True
-    if line.find(">") != -1:
-        return True
-    if line.find("<=") != -1:
-        return True
-    if line.find(">=") != -1:
-        return True
-    return False
-
-
-def is_an_if(line):
-    if line[0:4] != "if (" or line[-1] != ')':
-        return False
-    if is_a_test(line[4:-1]):
-        return True
-    
-def write_an_if(line):
-    global indent
-    result = "If " + line[4:-1].replace(" ", "")
-    result = result.replace("==", "=")
-    result = result.replace("!=", "≠")
-    result = result.replace("<=", "≤")
-    result = result.replace(">=", "≥")
-    result += ":Then "
-    indent += 4
-    return result
 
 def desindent(line, nb):
     global indent
@@ -71,20 +30,24 @@ def desindent(line, nb):
     if indent < tab:
         print("Error : There's bad identation Line " + str(nb))
         exit(1)
-    while indent > tab:
-        indent -= 4
-        return "End " + line[tab:].strip()
+    if indent > tab:
+        end = ""
+        while indent > tab:
+            indent -= 4
+            end += "End "
+        return end + line[tab:].strip()
     line = line[tab:]
     return line.strip()
 
 
 def gti_translator(content):
+    global indent
     lines = str_to_tab(content)
     export = ""
 
     for i in range(0, len(lines)):
         lines[i] = desindent(lines[i], i)
-        if lines[i][0:4] == "End ":
+        while lines[i][0:4] == "End ":
             export += "End \n"
             lines[i] = lines[i][4:]
         if is_affectation(lines[i]) == True:
@@ -95,6 +58,7 @@ def gti_translator(content):
             export += write_pause(lines[i])
         elif is_an_if(lines[i]) == True:
             export += write_an_if(lines[i])
+            indent += 4
         else:
             print("Error line " + str(i + 1))
             exit(1)
