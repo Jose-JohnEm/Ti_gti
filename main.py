@@ -16,25 +16,33 @@ from src.pause import is_pause
 from src.pause import write_pause
 
 from src.condition_if import is_an_if
+from src.condition_if import is_an_else
 from src.condition_if import write_an_if
+from src.condition_if import write_an_else
+
+from src.while_loop import is_while
+from src.while_loop import write_while
 
 indent = 0
+on_if = False
 
 def desindent(line, nb):
     global indent
+    global on_if
     tab = 0
     i = 0
     while line[i] == ' ':
         tab += 1
         i += 1
     if indent < tab:
-        print("Error : There's bad identation Line " + str(nb))
+        print("Error : There's bad identation Line " + str(nb + 1))
         exit(1)
-    if indent > tab:
+    if indent > tab and line.find("else") == -1:
         end = ""
         while indent > tab:
             indent -= 4
             end += "End "
+            on_if = False
         return end + line[tab:].strip()
     line = line[tab:]
     return line.strip()
@@ -42,6 +50,7 @@ def desindent(line, nb):
 
 def gti_translator(content):
     global indent
+    global on_if
     lines = str_to_tab(content)
     export = ""
 
@@ -59,7 +68,15 @@ def gti_translator(content):
         elif is_an_if(lines[i]) == True:
             export += write_an_if(lines[i])
             indent += 4
+            on_if = True
+        elif is_an_else(lines[i], on_if):
+            export += write_an_else(lines[i])
+            on_if = False
+        elif is_while(lines[i]) == True:
+            export += write_while(lines[i])
+            indent += 4
         else:
+            print(lines[i])
             print("Error line " + str(i + 1))
             exit(1)
         export += '\n'
