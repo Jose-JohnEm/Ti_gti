@@ -1,5 +1,4 @@
 
-
 def is_a_test(line):
     if line.find("==") != -1:
         return True

@@ -20,8 +20,12 @@ from src.condition_if import is_an_else
 from src.condition_if import write_an_if
 from src.condition_if import write_an_else
 
-from src.while_loop import is_while
-from src.while_loop import write_while
+from src.loops import write_while
+from src.loops import write_do_while
+from src.loops import write_for
+from src.loops import is_while
+from src.loops import is_do_while
+from src.loops import is_for
 
 indent = 0
 on_if = False
@@ -74,6 +78,12 @@ def gti_translator(content):
             on_if = False
         elif is_while(lines[i]) == True:
             export += write_while(lines[i])
+            indent += 4
+        elif is_do_while(lines[i]) == True:
+            export += write_do_while(lines[i])
+            indent += 4
+        elif is_for(lines[i]) == True:
+            export += write_for(lines[i])
             indent += 4
         else:
             print(lines[i])
