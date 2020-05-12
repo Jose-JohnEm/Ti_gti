@@ -11,12 +11,27 @@ def os_is_not_compatible(osys):
     return True
 
 def exit_error(err):
-    if err == 1:
-        print("Sorry gti only works on Windows, Linux, and Mac os")
+    errs = ["", "Sorry gti only works on Windows, Linux, and Mac os",
+            "Install failed because some files are missing. Please redownload the module",
+            ""]
+    for i in range(1, len(errs)):
+        if i == err:
+            print(errs[i])
     exit(err)
 
 def install_pip(osys):
-    pass
+    if osys == "Windows":
+        sh = os.environ['SHELL']
+        print(sh)
+        #ret = os.system("cd setupsss/ > null")
+        #os.system("del /f null")
+        #if ret != 0:
+        #    exit_error(2)
+        #ret = os.system("python get-pip.py")
+        return
+    else:
+        return
+
 
 def main():
     osys = platform.system()
