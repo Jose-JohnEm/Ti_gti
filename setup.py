@@ -4,14 +4,6 @@ import platform
 import shutil
 from tkinter import filedialog
 
-def os_is_not_compatible(osys):
-    if osys == "Windows":
-        return False
-    elif osys == "Darwin":
-        return False
-    elif osys == "Linux":
-        return False
-    return True
 
 def exit_error(err):
     errs = ["", "Sorry gti only works on Windows, Linux, and Mac os",
@@ -25,6 +17,17 @@ def exit_error(err):
         if i == err:
             print(errs[i])
     exit(err)
+
+
+def os_is_not_compatible(osys):
+    if osys == "Windows":
+        return False
+    elif osys == "Darwin":
+        return False
+    elif osys == "Linux":
+        return False
+    return True
+
 
 def configure_pip_on_windows():
     sh = os.environ['COMSPEC']
@@ -40,14 +43,18 @@ def configure_pip_on_windows():
         exit_error(4)
     print("Pip has been correctly installed ! [1/4]")
 
+
 def configure_pip_on_linux_and_mac():
+    #-----LINUX AND DARWIN INSTALLATION-----#
     pass
+
 
 def install_pip(osys):
     if osys == "Windows":
         configure_pip_on_windows()
     else:
         configure_pip_on_linux_and_mac()
+
 
 def install_pyinstaller(osys):
     ret = os.system("pip install pyinstaller --quiet")
@@ -59,11 +66,13 @@ def install_pyinstaller(osys):
         os.system("rm -f null")
     print("Pyinstaller has been correctly installed ! [2/4]")
 
+
 def pyinstall():
     ret = os.system("pyinstaller --onefile gti.py --name gti")
     if ret != 0:
         exit_error(6)
     shutil.rmtree('build', ignore_errors=True)
+
 
 def move_binaries_windows():
     print("A window opened. Choose Gti location...")
@@ -72,6 +81,7 @@ def move_binaries_windows():
     os.mkdir(path)
     shutil.move("dist/gti.exe", path)
     return path.replace("\\", "")
+
 
 def install_gti(osys):
     pyinstall()
@@ -84,12 +94,15 @@ def install_gti(osys):
     print("Gti has been correctly installed ! [3/4]")
     return path
 
-def add_path(path):
-    path = path.replace("/", "\\")
-    os.system("setx path \\\"%%path%;" + path +'\"')
-    print("setx path \"%path%;" + path +'\"')
-    print(os.environ['PATH'])
-    print("Gti path has been added to env ! [4/4]")
+
+def add_path(path, osys):
+    if osys != "Windows":
+        pass
+    print("Gti has been added !\n\nGti is ready for use !")
+    if osys == "Windows":
+        print("You need to add gti path on the environnement [4/4]\n\n \
+            Run :    setx path\"%path%;" + path)
+
 
 def main():
     osys = platform.system()
@@ -99,9 +112,8 @@ def main():
     install_pip(osys)
     install_pyinstaller(osys)
     path = install_gti(osys)
-    if osys != "Windows":
-        add_path(path)
-    print("Gti is ready for use. Enjoy !")
+    add_path(path, osys)
+    print("Enjoy !")
 
 
 if __name__ == "__main__":
