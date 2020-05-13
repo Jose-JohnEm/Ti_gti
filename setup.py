@@ -1,5 +1,8 @@
 import os
+import sys
 import platform
+import shutil
+from tkinter import filedialog
 
 def os_is_not_compatible(osys):
     if osys == "Windows":
@@ -56,16 +59,37 @@ def install_pyinstaller(osys):
         os.system("rm -f null")
     print("Pyinstaller has been correctly installed ! [2/4]")
 
-def install_gti(osys):
-    ret = os.system("pyinstaller --onefile gti.py --name gti > nl")
+def pyinstall():
+    ret = os.system("pyinstaller --onefile gti.py --name gti")
     if ret != 0:
         exit_error(6)
+    shutil.rmtree('build', ignore_errors=True)
+
+def move_binaries_windows():
+    print("A window opened. Choose Gti location...")
+    path = (filedialog.askdirectory() + "\jose-git").replace("\\", "")
+    print("Now gti location is : " + path)
+    os.mkdir(path)
+    shutil.move("dist/gti.exe", path)
+    return path.replace("\\", "")
+
+def install_gti(osys):
+    pyinstall()
     if osys == "Windows":
-        pass
+        path = move_binaries_windows()
     else:
-        os.system("rm -rf build; mkdir ~/jose-git; mv dist/gti.exe ~/jose-git/gti; rmdir dist")
+        pass
+    shutil.rmtree('dist', ignore_errors=True)
+    os.remove('gti.spec')
     print("Gti has been correctly installed ! [3/4]")
-    
+    return path
+
+def add_path(path):
+    path = path.replace("/", "\\")
+    os.system("setx path \\\"%%path%;" + path +'\"')
+    print("setx path \"%path%;" + path +'\"')
+    print(os.environ['PATH'])
+    print("Gti path has been added to env ! [4/4]")
 
 def main():
     osys = platform.system()
@@ -74,8 +98,10 @@ def main():
         exit_error(1)
     install_pip(osys)
     install_pyinstaller(osys)
-    install_gti(osys)
-    print("Sucess !")
+    path = install_gti(osys)
+    if osys != "Windows":
+        add_path(path)
+    print("Gti is ready for use. Enjoy !")
 
 
 if __name__ == "__main__":
