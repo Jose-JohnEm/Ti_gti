@@ -51,45 +51,65 @@ def desindent(line, nb):
     line = line[tab:]
     return line.strip()
 
+def check_for_indent_commands(line, tmp):
+    if tmp != "":
+        return tmp
+    global indent
+    global on_if
+    if is_an_if(line) == True:
+        exp = write_an_if(line)
+        indent += 4
+        on_if = True
+    elif is_while(line) == True:
+        exp = write_while(line)
+        indent += 4
+    elif is_do_while(line) == True:
+        exp = write_do_while(line)
+        indent += 4
+    elif is_for(line) == True:
+        exp = write_for(line)
+        indent += 4
+    else:
+        exp = ""
+    return exp
+
+def check_for_classic_commands(line):
+    global on_if
+    if is_affectation(line) == True:
+        exp = write_affect(line)
+    elif is_print(line) == True:
+        exp = write_print(line)
+    elif is_pause(line) == True:
+        exp = write_pause(line)
+    elif is_an_else(line, on_if):
+        exp = write_an_else(line)
+        on_if = False
+    else:
+        exp = ""
+    return exp
+
+def my_error(line, i):
+    if line == "":
+        print(line)
+        print("Error line " + str(i + 1))
+        exit(1)
+
 
 def gti_translator(content):
-    global indent
     global on_if
     lines = str_to_tab(content)
     export = ""
+    tmp = ""
 
     for i in range(0, len(lines)):
         lines[i] = desindent(lines[i], i)
         while lines[i][0:4] == "End ":
             export += "End \n"
             lines[i] = lines[i][4:]
-        if is_affectation(lines[i]) == True:
-            export += write_affect(lines[i])
-        elif is_print(lines[i]) == True:
-            export += write_print(lines[i])
-        elif is_pause(lines[i]) == True:
-            export += write_pause(lines[i])
-        elif is_an_if(lines[i]) == True:
-            export += write_an_if(lines[i])
-            indent += 4
-            on_if = True
-        elif is_an_else(lines[i], on_if):
-            export += write_an_else(lines[i])
-            on_if = False
-        elif is_while(lines[i]) == True:
-            export += write_while(lines[i])
-            indent += 4
-        elif is_do_while(lines[i]) == True:
-            export += write_do_while(lines[i])
-            indent += 4
-        elif is_for(lines[i]) == True:
-            export += write_for(lines[i])
-            indent += 4
-        else:
-            print(lines[i])
-            print("Error line " + str(i + 1))
-            exit(1)
-        export += '\n'
+        tmp = check_for_classic_commands(lines[i])
+        tmp = check_for_indent_commands(lines[i], tmp)
+        my_error(lines[i], i)
+        export += tmp + '\n'
     return export
 
 
