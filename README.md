@@ -1,3 +1,7 @@
+# TI_GTI 0.9 Release (stable)
+
+If you wan't to download the developp version, check out the `main` branch.
+
 # Ti
 
 This a new programmation language I created.
@@ -22,7 +26,7 @@ written on a manual soon
 
 ### Then
 
-On a terminal command, type : `python3    main.py    $[your file].ti`
+On a terminal command, type : `python    main.py    $[your file].ti`
 The program only works with .ti files.
 Make sure that compilation succed, else an error message
 will appear showing you at which line did the compilator failed
