@@ -132,6 +132,7 @@ def main():
     path = install_gti(osys)
     add_path(path, osys)
     print("Enjoy !")
+    os.system("rm -f null")
 
 
 if __name__ == "__main__":
