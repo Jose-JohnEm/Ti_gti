@@ -2,7 +2,9 @@ import os
 import sys
 import platform
 import shutil
-from tkinter import filedialog
+
+if platform.system() == "Windows":
+    from tkinter import filedialog
 
 
 def exit_error(err):
@@ -12,6 +14,7 @@ def exit_error(err):
             "Pip installation failed... Make sure you have Internet connection",
             "Pyinstaller installation Failed... Make sure you have Internet connection",
             "Gti compilation failed... Please redownload the module",
+            "Gti installation failed... Because you don't give SUDO rights.\nRestart with sudo !",
             ""]
     for i in range(1, len(errs)):
         if i == err:
@@ -46,8 +49,14 @@ def configure_pip_on_windows():
 
 def configure_pip_on_linux_and_mac():
     #-----LINUX AND DARWIN INSTALLATION-----#
-    pass
-
+    ret = os.system("cd setup/ > null && rm -f null")
+    if ret != 0:
+        exit_error(2)
+    ret = os.system("cd setup && python3 get-pip.py > null && rm -f null")
+    if ret != 0:
+        exit_error(4)
+    print("Pip has been correctly installed ! [1/4]")
+    
 
 def install_pip(osys):
     if osys == "Windows":
@@ -60,14 +69,10 @@ def install_pyinstaller(osys):
     ret = os.system("pip install pyinstaller --quiet")
     if ret != 0:
         exit_error(5)
-    if osys == "Windows":
-        os.system("del /f .\\null")
-    else:
-        os.system("rm -f null")
     print("Pyinstaller has been correctly installed ! [2/4]")
 
 
-def pyinstall():
+def pyinstall(osys):
     ret = os.system("pyinstaller --onefile gti.py --name gti")
     if ret != 0:
         exit_error(6)
@@ -82,13 +87,23 @@ def move_binaries_windows():
     shutil.move("dist/gti.exe", path)
     return path.replace("\\", "")
 
+def move_binaries_darlin():
+    path = "/usr/local/bin/jose-git"
+    if os.system("ls " + path) != 0:
+        try:
+            os.system("sudo mkdir " + path)
+            #os.mkdir(path)
+        except ValueError:
+            exit_error(7)
+    os.system("sudo mv dist/gti " + path)
+    return path
 
 def install_gti(osys):
-    pyinstall()
+    pyinstall(osys)
     if osys == "Windows":
         path = move_binaries_windows()
     else:
-        pass
+        path = move_binaries_darlin()
     shutil.rmtree('dist', ignore_errors=True)
     os.remove('gti.spec')
     print("Gti has been correctly installed ! [3/4]")
@@ -96,8 +111,9 @@ def install_gti(osys):
 
 
 def add_path(path, osys):
-    if osys != "Windows":
-        pass
+    if osys == "Linux":
+        os.system("echo 'export PATH=$PATH:/home/user/mes_prog' >> /home/user/.bashrc")
+        print("Just set $PATH variable within gti location [4/4]\n")
     print("Gti has been added !\n\nGti is ready for use !")
     if osys == "Windows":
         print("You need to add gti path on the environnement [4/4]\n\n \
@@ -109,8 +125,8 @@ def main():
 
     if os_is_not_compatible(osys):
         exit_error(1)
-    install_pip(osys)
-    install_pyinstaller(osys)
+    #install_pip(osys)
+    #install_pyinstaller(osys)
     path = install_gti(osys)
     add_path(path, osys)
     print("Enjoy !")

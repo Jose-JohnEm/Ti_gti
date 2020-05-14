@@ -4,5 +4,4 @@ __pycache__
 *.8xp
 build
 dist
-setup/
 *.spec
