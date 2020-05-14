@@ -1,3 +1,7 @@
+# TI_GTI 1.0 Release (non stable)
+
+If you wan't to download the stable version, check out the `stable` branch.
+
 # Ti
 
 This a new programmation language I created.
@@ -12,6 +16,21 @@ I have to created this because calculators can't understand
 my language. So Gti's goal is to translate the Ti code to
 calculators code. Then, we just have to copy the rendering
 on the calculator.
+
+# How to install
+
+**Before this, make sure that Python is already installed in your computer !**
+Then,
+There is in the main directory a file named `setup.py`. Run :
+$ python setup.py
+
+If you're in Windows, a window will open asking you a location for Ti_Gti binaries.
+If you're in Linux, the default location `/usr/local/bin` will be used,
+so the programm will ask you your password to get sudo rights to write in.
+If you're in Mac, the same thing should happen (*I can't test this in Mac so contact me if a problem occurs*)
+
+When intallation finshed and succeed, restart your shell.
+Now you've got Gti command line !
 
 # How to use
 
