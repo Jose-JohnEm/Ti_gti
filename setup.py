@@ -92,7 +92,6 @@ def move_binaries_darlin():
     if os.system("ls " + path) != 0:
         try:
             os.system("sudo mkdir " + path)
-            #os.mkdir(path)
         except ValueError:
             exit_error(7)
     os.system("sudo mv dist/gti " + path)
@@ -112,7 +111,8 @@ def install_gti(osys):
 
 def add_path(path, osys):
     if osys == "Linux":
-        os.system("echo 'export PATH=$PATH:/home/user/mes_prog' >> /home/user/.bashrc")
+        os.system("echo 'export PATH=$PATH:/usr/local/bin/jose-git' >> ~/." +
+        os.environ["SHELL"][os.environ["SHELL"].rfind("/") + 1:] + "rc")
         print("Just set $PATH variable within gti location [4/4]\n")
     print("Gti has been added !\n\nGti is ready for use !")
     if osys == "Windows":
@@ -123,10 +123,12 @@ def add_path(path, osys):
 def main():
     osys = platform.system()
 
+    #print(os.environ["SHELL"][os.environ["SHELL"].rfind("/") + 1:])
+    #exit(0)
     if os_is_not_compatible(osys):
         exit_error(1)
-    #install_pip(osys)
-    #install_pyinstaller(osys)
+    install_pip(osys)
+    install_pyinstaller(osys)
     path = install_gti(osys)
     add_path(path, osys)
     print("Enjoy !")
